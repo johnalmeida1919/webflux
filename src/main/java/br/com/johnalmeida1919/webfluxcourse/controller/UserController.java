@@ -2,6 +2,7 @@ package br.com.johnalmeida1919.webfluxcourse.controller;
 
 import br.com.johnalmeida1919.webfluxcourse.model.request.UserRequest;
 import br.com.johnalmeida1919.webfluxcourse.model.response.UserResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -11,7 +12,7 @@ public interface UserController {
 
     @PostMapping
     ResponseEntity<Mono<Void>> save(
-            @RequestBody UserRequest request
+            @Valid @RequestBody UserRequest request
     );
 
     @GetMapping(value = "/{id}")

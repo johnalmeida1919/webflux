@@ -3,8 +3,10 @@ package br.com.johnalmeida1919.webfluxcourse.controller.exception;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
 
 import static java.time.LocalDateTime.now;
@@ -33,6 +35,28 @@ public class ControllerExceptionHandler {
                 );
 
     }
+
+    @ExceptionHandler(WebExchangeBindException.class)
+    public ResponseEntity<Mono<ValidationError>> validationError(WebExchangeBindException exception, ServerHttpRequest request) {
+        var validationError = new ValidationError(
+                now(),
+                request.getPath().toString(),
+                BAD_REQUEST.value(),
+                "Validation error",
+        "Error on validation attribute"
+        );
+
+        for(FieldError fieldError: exception.getFieldErrors()) {
+            validationError
+                    .addError(
+                            fieldError.getField(),
+                            fieldError.getDefaultMessage()
+                    );
+        }
+
+        return ResponseEntity.badRequest().body(Mono.just(validationError));
+    }
+
     private String verifyDubKey(String message) {
         if(message.contains("email dup key")) {
             return "E-mail already registered";
