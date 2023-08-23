@@ -16,7 +16,7 @@ public interface UserController {
     );
 
     @GetMapping(value = "/{id}")
-    ResponseEntity<Mono<UserResponse>> find(
+    ResponseEntity<Mono<UserResponse>> findById(
             @PathVariable String id
     );
 
