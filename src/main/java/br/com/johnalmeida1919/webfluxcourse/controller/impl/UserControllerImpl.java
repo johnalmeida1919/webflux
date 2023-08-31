@@ -25,7 +25,6 @@ public class UserControllerImpl implements UserController {
     private  final UserMapper mapper;
     @Override
     public ResponseEntity<Mono<Void>> save(@Valid UserRequest request) {
-        userService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.save(request).then());
 
